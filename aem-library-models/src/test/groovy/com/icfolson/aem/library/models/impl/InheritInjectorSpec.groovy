@@ -1,5 +1,6 @@
 package com.icfolson.aem.library.models.impl
 
+import com.icfolson.aem.library.api.page.PageDecorator
 import com.icfolson.aem.library.models.annotations.InheritInject
 import com.icfolson.aem.library.models.specs.AemLibraryModelSpec
 import org.apache.sling.api.resource.Resource
@@ -31,6 +32,9 @@ class InheritInjectorSpec extends AemLibraryModelSpec {
         String text
 
         @InheritInject
+        PageDecorator page
+
+        @InheritInject
         List<InheritModel> models
     }
 
@@ -39,7 +43,7 @@ class InheritInjectorSpec extends AemLibraryModelSpec {
             citytechinc {
                 "jcr:content" {
                     component("title": "Testing Component", "items": ["item1", "item2"], "text": "Not Inherited",
-                        "option": "TWO") {
+                        "option": "TWO", "page": "/content/citytechinc") {
                         models {
                             item1("title": "Item 1")
                             item2("title": "Item 2")
@@ -74,6 +78,15 @@ class InheritInjectorSpec extends AemLibraryModelSpec {
 
         expect:
         component.option == Option.TWO
+    }
+
+    def "adapter inheritance"() {
+        setup:
+        def resource = resourceResolver.resolve("/content/citytechinc/page1/jcr:content/component")
+        def component = resource.adaptTo(InheritModel)
+
+        expect:
+        component.page != null
     }
 
     def "model list inheritance"() {

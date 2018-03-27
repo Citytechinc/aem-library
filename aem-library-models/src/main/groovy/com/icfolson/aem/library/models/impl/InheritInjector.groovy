@@ -42,7 +42,8 @@ class InheritInjector extends AbstractComponentNodeInjector implements InjectAnn
 
                 value = enumString.present ? declaredType[enumString.get()] : null
             } else {
-                value = componentNode.getInherited(name, declaredType as Class).orNull()
+                value = componentNode.getInherited(name, declaredType as Class).orNull() ?:
+                        componentNode.getAsTypeInherited(name, declaredType as Class).orNull()
             }
         }
 
